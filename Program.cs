@@ -63,6 +63,10 @@ namespace myApp
             MLContext mlContext = new MLContext(seed: 0);
 
             // Defines the mappig to load text from the input .csv
+            // An improved version would allow the user to choose the 
+            // features to be loaded.
+            // This would make it easy to see what features are useful from the
+            // gamut provided
             _textLoader = mlContext.Data.CreateTextLoader(new TextLoader.Arguments()
             {
                 Separators = new[] { ',' },
@@ -81,8 +85,7 @@ namespace myApp
                 }
             });
 
-            // Call the method to train the regression
-
+            //  Call the method to train the regression
             var model = Train(mlContext, _trainDataPath);
 
             //  Evaluate the model and compare with the test data set
@@ -99,15 +102,21 @@ namespace myApp
         {
             IDataView dataView = _textLoader.Read(dataPath);
 
+            // You can use the ML.Net normailzers if needs be.
             /*
-                        var pipeline1 = mlContext.Transforms.Normalize("SoldPrice");
-                        var m = pipeline1.Fit(dataView);
-                        var modelParams = m.Columns .First(x => x.Name == "SoldPrice")
+              var pipeline1 = mlContext.Transforms.Normalize("SoldPrice");
+              var m = pipeline1.Fit(dataView);
+              var modelParams = m.Columns .First(x => x.Name == "SoldPrice")
                                                      .ModelParameters as NormalizingTransformer.AffineNormalizerModelParameters<float>;
 
-                        Console.WriteLine($"The normalization parameters are: Scale = {modelParams.Scale} and Offset = {modelParams.Offset}");
-                        */
+              Console.WriteLine($"The normalization parameters are: Scale = {modelParams.Scale} and Offset = {modelParams.Offset}");
+            */
 
+            // THis defines a pipeline used to train the model
+            // Note that a good idea would be to vary the number of features and map that agains the 
+            // metrics from the test data to avoid over or undefitting
+            // A use feature is the ML.Net support for converting string values to a numeric vector that
+            // can be used to train.
             var pipeline = mlContext.Transforms.CopyColumns(inputColumnName: "SoldPrice", outputColumnName: "Label")
             .Append(mlContext.Transforms.Categorical.OneHotEncoding("GarageType"))
 .Append(mlContext.Transforms.Concatenate("Features", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "GarageType", "LotSize"))
@@ -127,6 +136,12 @@ namespace myApp
             Console.WriteLine("The model is saved to {0}", _modelPath);
         }
 
+        /// <summary>
+        /// Evaluate the test data set and write metrics to show the model 
+        /// quality
+        /// </summary>
+        /// <param name="mlContext"></param>
+        /// <param name="model"></param>
         private static void Evaluate(MLContext mlContext, ITransformer model)
         {
             IDataView dataView = _textLoader.Read(_testDataPath);
@@ -144,18 +159,17 @@ namespace myApp
 
         private static void TestSinglePrediction(MLContext mlContext)
         {
+            //  Load the prediction model we saved earlier
             ITransformer loadedModel;
             using (var stream = new FileStream(_modelPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 loadedModel = mlContext.Model.Load(stream);
             }
-            // </Snippet21>
+            
 
-            //Prediction test
-            // Create prediction function and make prediction.
-            // <Snippet22>
+            
             var predictionFunction = loadedModel.CreatePredictionEngine<HouseData, HousePrediction>(mlContext);
-            //var predictionFunction = loadedModel.CreatePredictionEngine<List<HouseData>, List<HousePrediction>>(mlContext);
+           
             var housePriceSample = new HouseData()
             {
                 BedRooms = 3,
@@ -173,7 +187,7 @@ namespace myApp
             var pv = prediction.SoldPrice;
 
             Console.WriteLine($"**********************************************************************");
-            Console.WriteLine($"Predicted fare: {pv:0.####}, actual fare: 15.5");
+            Console.WriteLine($"Predicted SellPrice: {pv:0.####}");
             Console.WriteLine($"**********************************************************************");
 
             housePriceSample = new HouseData()
@@ -188,12 +202,12 @@ namespace myApp
                 GarageType = "Attached"
             };
 
-            var prediction1 = predictionFunction.Predict(housePriceSample);
+            prediction = predictionFunction.Predict(housePriceSample);
 
-            var pv1 = prediction1.SoldPrice;
+            pv = prediction.SoldPrice;
 
             Console.WriteLine($"**********************************************************************");
-            Console.WriteLine($"Predicted fare: {pv1:0.####}, actual fare: 15.5");
+            Console.WriteLine($"Predicted Sell Price: {pv:0.####}");
             Console.WriteLine($"**********************************************************************");
 
             // 7	3	0	3	0	3
