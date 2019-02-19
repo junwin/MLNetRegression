@@ -52,14 +52,13 @@ namespace myApp
 
         // Define input files and where the trained model will be stored
         private static readonly string _trainDataPath = Path.Combine(Environment.CurrentDirectory, "HouseDataExtended3Anon.csv");
-
         private static readonly string _testDataPath = Path.Combine(Environment.CurrentDirectory, "HouseDataExtended3AnonTest.csv");
         private static readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "Model.zip");
         private static TextLoader _textLoader;
 
         private static void Main(string[] args)
         {
-            // STEP 2: Create a ML.NET environment
+            // Create a ML.NET environment
             MLContext mlContext = new MLContext(seed: 0);
 
             // Defines the mappig to load text from the input .csv
