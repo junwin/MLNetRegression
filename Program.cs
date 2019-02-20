@@ -5,6 +5,7 @@ using Microsoft.ML.Data;
 using System;
 using System.IO;
 using System.Linq;
+using Microsoft.ML.Transforms.Normalizers;
 
 namespace myApp
 {
@@ -15,6 +16,9 @@ namespace myApp
 
         public class HouseData
         {
+            [LoadColumn(3)]
+            public float Area;
+
             [LoadColumn(4)]
             public float Rooms;
 
@@ -73,6 +77,7 @@ namespace myApp
                 HasHeader = true,
                 Column = new[]
                 {
+                    new TextLoader.Column("Area", DataKind.R4, 3),
                     new TextLoader.Column("Rooms", DataKind.R4, 4),
                     new TextLoader.Column("BedRooms", DataKind.R4, 13),
                     new TextLoader.Column("BedRoomsBsmt", DataKind.R4, 12),
@@ -85,8 +90,29 @@ namespace myApp
                 }
             });
 
+            IDataView dataView = _textLoader.Read(_trainDataPath);
+
+           
+            var pipeline = mlContext.Transforms.CopyColumns(inputColumnName: "SoldPrice", outputColumnName: "Label")
+        .Append(mlContext.Transforms.Categorical.OneHotEncoding("GarageType"))
+        .Append(mlContext.Transforms.Concatenate("Features", "Area", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "GarageType", "LotSize"))
+        .Append(mlContext.Regression.Trainers.FastTree());
+
+            /*
+            .Append(mlContext.Transforms.Concatenate("Features", "Area", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "GarageType", "LotSize"));
+            .Append(mlContext.Regression.Trainers.FastTree());
+            */
+            // Split the data 90:10 into train and test sets, train and evaluate.
+            var (trainData, testData) = mlContext.Regression.TrainTestSplit(dataView, testFraction: 0.1);
+
+            var transformedData = pipeline.Fit(dataView).Transform(dataView);
+
+            var model = pipeline.Fit(trainData);
+
+            SaveModelAsFile(mlContext, model);
+
             //  Call the method to train the regression
-            var model = Train(mlContext, _trainDataPath);
+            //var model = Train(mlContext, _trainDataPath);
 
             //  Evaluate the model and compare with the test data set
             Evaluate(mlContext, model);
@@ -120,6 +146,7 @@ namespace myApp
             var pipeline = mlContext.Transforms.CopyColumns(inputColumnName: "SoldPrice", outputColumnName: "Label")
             .Append(mlContext.Transforms.Categorical.OneHotEncoding("GarageType"))
 .Append(mlContext.Transforms.Concatenate("Features", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "GarageType", "LotSize"))
+.Append(mlContext.Transforms.Normalize( new NormalizingEstimator.MinMaxColumn(inputColumnName: "Features", outputColumnName: "MinMaxNormalized", fixZero: true)))
 .Append(mlContext.Regression.Trainers.FastTree());
 
             var model = pipeline.Fit(dataView);
