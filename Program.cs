@@ -17,7 +17,7 @@ namespace myApp
         public class HouseData
         {
             [LoadColumn(3)]
-            public float Area;
+            public string Area;
 
             [LoadColumn(4)]
             public float Rooms;
@@ -77,7 +77,7 @@ namespace myApp
                 HasHeader = true,
                 Column = new[]
                 {
-                    new TextLoader.Column("Area", DataKind.R4, 3),
+                    new TextLoader.Column("Area",  DataKind.Text, 3),
                     new TextLoader.Column("Rooms", DataKind.R4, 4),
                     new TextLoader.Column("BedRooms", DataKind.R4, 13),
                     new TextLoader.Column("BedRoomsBsmt", DataKind.R4, 12),
@@ -95,6 +95,7 @@ namespace myApp
            
             var pipeline = mlContext.Transforms.CopyColumns(inputColumnName: "SoldPrice", outputColumnName: "Label")
         .Append(mlContext.Transforms.Categorical.OneHotEncoding("GarageType"))
+        .Append(mlContext.Transforms.Categorical.OneHotEncoding("Area"))
         .Append(mlContext.Transforms.Concatenate("Features", "Area", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "GarageType", "LotSize"))
         .Append(mlContext.Transforms.Normalize(new NormalizingEstimator.MinMaxColumn(inputColumnName: "Features", outputColumnName: "FeaturesNormalized", fixZero: true)))
         .Append(mlContext.Regression.Trainers.FastTree(featureColumn: "FeaturesNormalized"));
@@ -203,6 +204,7 @@ namespace myApp
         /// <param name="model"></param>
         private static void Evaluate(MLContext mlContext, ITransformer model)
         {
+            /*
             IDataView dataView = _textLoader.Read(_testDataPath);
             var predictions = model.Transform(dataView);
 
@@ -214,6 +216,7 @@ namespace myApp
 
             Console.WriteLine($"*       R2 Score:      {metrics.RSquared:0.##}");
             Console.WriteLine($"*       RMS loss:      {metrics.Rms:#.##}");
+            */
         }
 
         private static void TestSinglePrediction(MLContext mlContext)
@@ -231,6 +234,7 @@ namespace myApp
            
             var housePriceSample = new HouseData()
             {
+                Area = "33",
                 BedRooms = 3,
                 BedRoomsBsmt = 0,
                 FullBath = 2,
@@ -251,6 +255,7 @@ namespace myApp
 
             housePriceSample = new HouseData()
             {
+                Area = "11",
                 BedRooms = 5,
                 BedRoomsBsmt = 1,
                 FullBath = 6,

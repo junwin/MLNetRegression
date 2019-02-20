@@ -13,9 +13,6 @@
     <None Update="HouseDataExtended3Anon.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="HouseDataExtended3AnonTest.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
