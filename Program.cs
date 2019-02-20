@@ -96,18 +96,50 @@ namespace myApp
             var pipeline = mlContext.Transforms.CopyColumns(inputColumnName: "SoldPrice", outputColumnName: "Label")
         .Append(mlContext.Transforms.Categorical.OneHotEncoding("GarageType"))
         .Append(mlContext.Transforms.Concatenate("Features", "Area", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "GarageType", "LotSize"))
-        .Append(mlContext.Regression.Trainers.FastTree());
+        .Append(mlContext.Transforms.Normalize(new NormalizingEstimator.MinMaxColumn(inputColumnName: "Features", outputColumnName: "FeaturesNormalized", fixZero: true)))
+        .Append(mlContext.Regression.Trainers.FastTree(featureColumn: "FeaturesNormalized"));
 
             /*
             .Append(mlContext.Transforms.Concatenate("Features", "Area", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "GarageType", "LotSize"));
             .Append(mlContext.Regression.Trainers.FastTree());
             */
+
+
+            //var pipelineNorm = mlContext.Transforms.Normalize(new NormalizingEstimator.MinMaxColumn(inputColumnName: "SoldPrice", outputColumnName: "MinMaxNormalized", fixZero: true));
+
+
+
+            var normalizedData = pipeline.Fit(dataView).Transform(dataView);
+            //var meanVarValues = normalizedData.GetColumn<float>(mlContext, "MinMaxNormalized").ToArray();
+            //var meanVarValues = normalizedData.GetColumn<float[]>(mlContext, "MinMaxNormalized").ToArray();
+
+
             // Split the data 90:10 into train and test sets, train and evaluate.
             var (trainData, testData) = mlContext.Regression.TrainTestSplit(dataView, testFraction: 0.1);
+            
+            //var transformedData = pipeline.Fit(dataView).Transform(dataView);
 
-            var transformedData = pipeline.Fit(dataView).Transform(dataView);
 
+
+            // Train the model.
             var model = pipeline.Fit(trainData);
+            // Compute quality metrics on the test set.
+            var metrics = mlContext.Regression.Evaluate(model.Transform(testData));
+            //Console.WriteLine(metrics.AccuracyMicro);
+
+            // Now run the 5-fold cross-validation experiment, using the same pipeline.
+            var cvResults = mlContext.Regression.CrossValidate(dataView, pipeline, numFolds: 5);
+
+            // The results object is an array of 5 elements. For each of the 5 folds, we have metrics, model and scored test data.
+            // Let's compute the average micro-accuracy.
+            //var microAccuracies = cvResults.Select(r => r.metrics.);
+            //Console.WriteLine(microAccuracies.Average());
+
+
+
+
+
+            //var model = pipeline.Fit(trainData);
 
             SaveModelAsFile(mlContext, model);
 
