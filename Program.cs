@@ -1,5 +1,4 @@
 ﻿using Microsoft.ML;
-using Microsoft.ML.Data;
 using System;
 using System.IO;
 
@@ -7,21 +6,21 @@ namespace myApp
 {
     internal class Program
     {
-        
         // Define input files and where the trained model will be stored
         private static readonly string _trainDataPath = Path.Combine(Environment.CurrentDirectory, "HouseDataExtended3Anon.csv");
 
         private static readonly string _testDataPath = Path.Combine(Environment.CurrentDirectory, "HouseDataExtended3AnonTest.csv");
         private static readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "housePriceModel.zip");
-    
 
         private static void Main(string[] args)
         {
             // STEP 2: Create a ML.NET environment
             MLContext mlContext = new MLContext(seed: 0);
 
+            // Train and Save the model
             HousePriceModel.TrainAndSaveModel(mlContext, _trainDataPath, _modelPath);
 
+            // Run a few test examples
             var housePriceSample1 = new HouseData() { Area = 33, BedRooms = 3, BedRoomsBsmt = 0, FullBath = 2, HalfBath = 0, Rooms = 6, Floors = 1, LotSize = 12000, GarageType = "Attached" };
             HousePricePrediction.PredictSinglePrice(housePriceSample1, mlContext, _trainDataPath, _modelPath);
 
