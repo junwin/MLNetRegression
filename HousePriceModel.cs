@@ -12,9 +12,6 @@ namespace myApp
 {
     public class HousePriceModel
     {
-
-
-
         private static string NumFeatures = nameof(NumFeatures);
 
         private static string CatFeatures = nameof(CatFeatures);
@@ -47,12 +44,17 @@ namespace myApp
             // Read the sample data into a view that we can use for training
             var trainingDataView = mlContext.Data.ReadFromTextFile<HouseData>(dataPath, hasHeader: true, separatorChar: ',');
 
-            // create the trainer we will use 
+            // create the trainer we will use  - ML.NET supports different training methods
             var trainer = mlContext.Regression.Trainers.FastTree(labelColumn: DefaultColumnNames.Label, featureColumn: DefaultColumnNames.Features);
 
             // Create the training pipeline, this determines how the input data will be transformed
-            // We can also select the features we want to use here
+            // We can also select the features we want to use here, the names used correspond to the porperty names in 
+            // HouseData
             string[] numericFeatureNames = { "Area","Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors","LotSize"};
+
+            // We distinguish between features that are strings e.g. {"attached","detached","none") garage types and 
+            // Numeric faeature, since learning systems only work with numeric values we need to convert the strings.
+            // You can see that in the training pipeline we have applied OneHotEncoding to do this.
             string[] categoryFeatureNames = { "GarageType" };
             
             var trainingPipeline = mlContext.Transforms.Concatenate(NumFeatures, numericFeatureNames)

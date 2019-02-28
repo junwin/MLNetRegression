@@ -1,11 +1,4 @@
-﻿using Microsoft.Data.DataView;
-using Microsoft.ML;
-using Microsoft.ML.Core.Data;
-using Microsoft.ML.Data;
-using System;
-using System.IO;
-using System.Linq;
-using Microsoft.ML.Transforms.Normalizers;
+﻿using Microsoft.ML.Data;
 
 namespace myApp
 {
