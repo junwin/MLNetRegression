@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.ML;
-using Microsoft.ML.Core.Data;
+﻿using Microsoft.ML;
+using Microsoft.ML.Data;
 using System;
 using System.IO;
 using System.Linq;
-using Microsoft.ML.Data;
 
 namespace myApp
 {
@@ -31,55 +27,53 @@ namespace myApp
             CreateHousePriceModelUsingPipeline(mlContext, dataPath, outputModelPath);
         }
 
-
         /// <summary>
-        /// Build model for predicting next month country unit sales using Learning Pipelines API
+        /// Build and train the model used to predict house prices
         /// </summary>
-        /// <param name="dataPath">Input training file path</param>
-        /// <returns></returns>
+        /// <param name="mlContext"></param>
+        /// <param name="dataPath"></param>
+        /// <param name="outputModelPath"></param>
         private static void CreateHousePriceModelUsingPipeline(MLContext mlContext, string dataPath, string outputModelPath)
         {
-            Console.WriteLine("Training product forecasting");
+            Console.WriteLine("Training house sell price model");
 
-            // Read the sample data into a view that we can use for training
+            // Load sample data into a view that we can use for training - ML.NET provides support for 
+            // many different data types.
             var trainingDataView = mlContext.Data.ReadFromTextFile<HouseData>(dataPath, hasHeader: true, separatorChar: ',');
 
             // create the trainer we will use  - ML.NET supports different training methods
+            // some trainers support automatic feature normalization and setting regularization
+            // ML.NET lets you choose a number of different training alogorithms
             var trainer = mlContext.Regression.Trainers.FastTree(labelColumn: DefaultColumnNames.Label, featureColumn: DefaultColumnNames.Features);
 
-            // Create the training pipeline, this determines how the input data will be transformed
-            // We can also select the features we want to use here, the names used correspond to the porperty names in 
-            // HouseData
-            string[] numericFeatureNames = { "Area","Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors","LotSize"};
+            // Feature Selection - We can also select the features we want to use here, the names used 
+            // correspond to the porperty names in HouseData
+            string[] numericFeatureNames = { "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "LotSize" };
 
-            // We distinguish between features that are strings e.g. {"attached","detached","none") garage types and 
+            // We distinguish between features that are strings e.g. {"attached","detached","none") garage types and
             // Numeric faeature, since learning systems only work with numeric values we need to convert the strings.
             // You can see that in the training pipeline we have applied OneHotEncoding to do this.
-            string[] categoryFeatureNames = { "GarageType" };
-            
-            var trainingPipeline = mlContext.Transforms.Concatenate(NumFeatures, numericFeatureNames)
-                .Append(mlContext.Transforms.Categorical.OneHotEncoding(CatFeatures, inputColumnName: categoryFeatureNames[0]))
-                .Append(mlContext.Transforms.Concatenate(DefaultColumnNames.Features, NumFeatures, CatFeatures))
+            // We have added area, since although in the data set its a number, it could be some other code.
+            string[] categoryFeatureNames = { "GarageType", "Area" };
+
+            // ML.NET combines transforms for data preparation and model training into a single pipeline, these are then applied 
+            // to training data and the input data used to make predictions in your model.
+           var trainingPipeline = mlContext.Transforms.Concatenate(NumFeatures, numericFeatureNames)
+                .Append(mlContext.Transforms.Categorical.OneHotEncoding("CatGarageType", inputColumnName: categoryFeatureNames[0]))
+                .Append(mlContext.Transforms.Categorical.OneHotEncoding("CatArea", inputColumnName: categoryFeatureNames[1]))
+                .Append(mlContext.Transforms.Concatenate(DefaultColumnNames.Features, NumFeatures, "CatGarageType", "CatArea"))
                 .Append(mlContext.Transforms.CopyColumns(DefaultColumnNames.Label, inputColumnName: nameof(HouseData.SoldPrice)))
                 .Append(trainer);
 
-            // Split the data 90:10 into train and test sets, train and evaluate.
-            var (trainData, testData) = mlContext.Regression.TrainTestSplit(trainingDataView, testFraction: 0.2);
-
-            // Train the model.
-            var model = trainingPipeline.Fit(trainData);
-            // Compute quality metrics on the test set.
-            var metrics = mlContext.Regression.Evaluate(model.Transform(testData));
-            Helpers.PrintRegressionMetrics(trainer.ToString(), metrics);
-
-            // Cross-Validate with single dataset (since we don't have two datasets, one for training and for evaluate)
-            // in order to evaluate and get the model's accuracy metrics
+            //  We use cross-valdiation toestimate the variance of the model quality from one run to another,
+            // it and also eliminates the need to extract a separate test set for evaluation.
+            // We display the quality metrics in order to evaluate and get the model's accuracy metrics
             Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
             var crossValidationResults = mlContext.Regression.CrossValidate(data: trainingDataView, estimator: trainingPipeline, numFolds: 6, labelColumn: DefaultColumnNames.Label);
             Helpers.PrintRegressionFoldsAverageMetrics(trainer.ToString(), crossValidationResults);
 
             // Train the model
-            model = trainingPipeline.Fit(trainingDataView);
+            var model = trainingPipeline.Fit(trainingDataView);
 
             // Save the model for later comsumption from end-user apps
             using (var file = File.OpenWrite(outputModelPath))

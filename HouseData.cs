@@ -5,7 +5,7 @@ namespace myApp
     public class HouseData
     {
         [LoadColumn(3)]
-        public float Area;
+        public string Area;
 
         [LoadColumn(4)]
         public float Rooms;

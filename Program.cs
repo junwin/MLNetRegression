@@ -19,10 +19,10 @@ namespace myApp
             HousePriceModel.TrainAndSaveModel(mlContext, _trainDataPath, _modelPath);
 
             // Run a few test examples
-            var housePriceSample1 = new HouseData() { Area = 33, BedRooms = 3, BedRoomsBsmt = 0, FullBath = 2, HalfBath = 0, Rooms = 7, Floors = 1, LotSize = 12000, GarageType = "Attached" };
+            var housePriceSample1 = new HouseData() { Area = "33", BedRooms = 3, BedRoomsBsmt = 0, FullBath = 2, HalfBath = 0, Rooms = 7, Floors = 1, LotSize = 12000, GarageType = "Attached" };
             HousePricePrediction.PredictSinglePrice(housePriceSample1, mlContext, _trainDataPath, _modelPath);
 
-            var housePriceSample2 = new HouseData() { Area = 11, BedRooms = 5, BedRoomsBsmt = 1, FullBath = 6, HalfBath = 1, Rooms = 14, Floors = 2, LotSize = 30000, GarageType = "Attached" };
+            var housePriceSample2 = new HouseData() { Area = "11", BedRooms = 5, BedRoomsBsmt = 1, FullBath = 6, HalfBath = 1, Rooms = 14, Floors = 2, LotSize = 30000, GarageType = "Attached" };
             HousePricePrediction.PredictSinglePrice(housePriceSample2, mlContext, _trainDataPath, _modelPath);
 
         }
