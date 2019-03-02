@@ -10,6 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="HouseData.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="HouseDataExtended3Anon.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

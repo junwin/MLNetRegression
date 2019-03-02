@@ -1,38 +1,46 @@
 ﻿using Microsoft.ML.Data;
 
+//MLS #	Stat	Closed Date	Sold Pr	Type	Yr Blt	Street #	Str Name	Area	Zip	ASF	# Rms	# Full Baths	# Half Baths	Bsmt Bth	Beds	Bsmt. Beds	Garage Type	# Garage Spaces	# Parking Spaces
+
 namespace myApp
 {
     public class HouseData
     {
-        [LoadColumn(3)]
+        [LoadColumn(8)]
         public string Area;
 
         [LoadColumn(4)]
+        public string HouseType;
+
+        [LoadColumn(11)]
         public float Rooms;
 
-        [LoadColumn(13)]
+        [LoadColumn(15)]
         public float BedRooms;
 
-        [LoadColumn(12)]
+        [LoadColumn(16)]
         public float BedRoomsBsmt;
 
-        [LoadColumn(5)]
+        [LoadColumn(12)]
         public float FullBath;
 
-        [LoadColumn(6)]
+        [LoadColumn(13)]
         public float HalfBath;
 
-        [LoadColumn(7)]
-        public float Floors;
-
-        [LoadColumn(9)]
+        [LoadColumn(3)]
         public float SoldPrice;
 
-        [LoadColumn(22)]
-        public float LotSize;
+        [LoadColumn(10)]
+        public float ApproxSquFeet;
 
-        [LoadColumn(16)]
+        [LoadColumn(17)]
         public string GarageType;
+
+        [LoadColumn(18)]
+        public float GarageSpaces;
+
+        [LoadColumn(19)]
+        public float ParkingSpaces;
     }
 
     //  The output datat
