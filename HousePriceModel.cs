@@ -65,7 +65,7 @@ namespace myApp
                 .Append(mlContext.Transforms.CopyColumns(DefaultColumnNames.Label, inputColumnName: nameof(HouseData.SoldPrice)))
                 .Append(trainer);
 
-            //  We use cross-valdiation toestimate the variance of the model quality from one run to another,
+            //  We use cross-valdiation to estimate the variance of the model quality from one run to another,
             // it and also eliminates the need to extract a separate test set for evaluation.
             // We display the quality metrics in order to evaluate and get the model's accuracy metrics
             Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
