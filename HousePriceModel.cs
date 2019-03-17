@@ -48,7 +48,7 @@ namespace myApp
 
             // Feature Selection - We can also select the features we want to use here, the names used 
             // correspond to the porperty names in HouseData
-            string[] numericFeatureNames = { "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "Floors", "LotSize" };
+            string[] numericFeatureNames = { "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath",  "ApproxSquFeet", "GarageSpaces", "ParkingSpaces" };
 
             // We distinguish between features that are strings e.g. {"attached","detached","none") garage types and
             // Numeric faeature, since learning systems only work with numeric values we need to convert the strings.
