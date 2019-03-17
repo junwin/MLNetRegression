@@ -1,0 +1,4 @@
+C:\Users\junwi\source\repos\MLNetRegression\obj\Debug\netcoreapp2.2\myApp.csprojAssemblyReference.cache
+C:\Users\junwi\source\repos\MLNetRegression\obj\Debug\netcoreapp2.2\myApp.csproj.CoreCompileInputs.cache
+C:\Users\junwi\source\repos\MLNetRegression\obj\Debug\netcoreapp2.2\myApp.AssemblyInfoInputs.cache
+C:\Users\junwi\source\repos\MLNetRegression\obj\Debug\netcoreapp2.2\myApp.AssemblyInfo.cs
