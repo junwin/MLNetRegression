@@ -3,7 +3,7 @@ using Microsoft.ML.Data;
 using System;
 using System.Linq;
 using Microsoft.ML;
-//using Microsoft.ML.Core.Data;
+using Microsoft.ML.Core.Data;
 using System.IO;
 
 namespace myApp
@@ -28,20 +28,25 @@ namespace myApp
             Console.WriteLine($"*       R-squared: {R2:0.###}  ");
             Console.WriteLine($"*************************************************************************************************************");
         }
-/*
+        /*
+                public static void PrintRegressionFoldsAverageMetrics(string algorithmName,
+                                                                      (RegressionMetrics metrics,
+                                                                       ITransformer model,
+                                                                       IDataView scoredTestData)[] crossValidationResults
+                                                                     )
+                                                                      public static void PrintRegressionFoldsAverageMetrics(string algorithmName, TrainCatalogBase.CrossValidationResult<RegressionMetrics>[] crossValidationResults)
+                                                                     */
         public static void PrintRegressionFoldsAverageMetrics(string algorithmName,
-                                                              (RegressionMetrics metrics,
-                                                               ITransformer model,
-                                                               IDataView scoredTestData)[] crossValidationResults
-                                                             )
-                                                             */
-            public static void PrintRegressionFoldsAverageMetrics(string algorithmName, TrainCatalogBase.CrossValidationResult<RegressionMetrics>[] crossValidationResults)
+                                                           (RegressionMetrics metrics,
+                                                            ITransformer model,
+                                                            IDataView scoredTestData)[] crossValidationResults
+                                                          )
         {
-            var L1 = crossValidationResults.Select(r => r.Metrics.L1);
-            var L2 = crossValidationResults.Select(r => r.Metrics.L2);
-            var RMS = crossValidationResults.Select(r => r.Metrics.L1);
-            var lossFunction = crossValidationResults.Select(r => r.Metrics.LossFn);
-            var R2 = crossValidationResults.Select(r => r.Metrics.RSquared);
+            var L1 = crossValidationResults.Select(r => r.metrics.L1);
+            var L2 = crossValidationResults.Select(r => r.metrics.L2);
+            var RMS = crossValidationResults.Select(r => r.metrics.L1);
+            var lossFunction = crossValidationResults.Select(r => r.metrics.LossFn);
+            var R2 = crossValidationResults.Select(r => r.metrics.RSquared);
 
             Console.WriteLine($"*************************************************************************************************************");
             Console.WriteLine($"*       Metrics for {algorithmName} Regression model      ");
