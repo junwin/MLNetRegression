@@ -1,0 +1,15 @@
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\MLNETModels\housePriceModel.zip
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\HousePriceService.deps.json
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\HousePriceService.runtimeconfig.json
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\HousePriceService.runtimeconfig.dev.json
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\HousePriceService.dll
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\HousePriceService.pdb
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.csprojAssemblyReference.cache
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.csproj.CoreCompileInputs.cache
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.RazorAssemblyInfo.cache
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.RazorAssemblyInfo.cs
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.AssemblyInfoInputs.cache
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.AssemblyInfo.cs
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.RazorTargetAssemblyInfo.cache
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.dll
+C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\obj\Debug\netcoreapp2.2\HousePriceService.pdb

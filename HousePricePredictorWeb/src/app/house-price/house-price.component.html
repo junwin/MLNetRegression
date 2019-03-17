@@ -1,0 +1,52 @@
+<h2> Available Areas</h2>
+<ul class="house-price">
+  <li *ngFor="let a of availableAreas" [class.selected]="a === selectedArea" (click)="onSelectArea(a)">
+    <span>{{a}}</span>
+  </li>
+</ul>
+<div *ngIf="selectedArea">
+
+
+  <div>
+    <label>Prediced Price:
+      {{housePrice | async}}
+    </label>
+    <label>Area:
+      <input [(ngModel)]="selectedArea" placeholder="area" />
+    </label>
+    <label>rooms:
+      <input [(ngModel)]="houseFeature.rooms" placeholder="rooms" />
+    </label>
+    <label>bed rooms:
+      <input [(ngModel)]="houseFeature.bedRooms" placeholder="bed rooms" />
+    </label>
+    <label>bedRoomsBsmt:
+      <input [(ngModel)]="houseFeature.bedRoomsBsmt" placeholder="bed rooms" />
+    </label>
+    <label>full bath:
+      <input [(ngModel)]="houseFeature.fullBath" placeholder="rooms" />
+    </label>
+    <label>half bath:
+      <input [(ngModel)]="houseFeature.halfBath" placeholder="rooms" />
+    </label>
+    <label>sq feet:
+      <input [(ngModel)]="houseFeature.approxSquFeet" placeholder="rooms" />
+    </label>
+
+    <label>sq feet:
+      <input [(ngModel)]="houseFeature.garageType" placeholder="rooms" />
+    </label>
+    <label>garageSapces:
+      <input [(ngModel)]="houseFeature.garageSpaces" placeholder="rooms" />
+    </label>
+    <label>parkingSapces:
+      <input [(ngModel)]="houseFeature.parkingSpaces" placeholder="rooms" />
+    </label>
+
+
+
+
+
+
+  </div>
+</div>
