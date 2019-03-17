@@ -39,12 +39,12 @@ namespace myApp
 
             // Load sample data into a view that we can use for training - ML.NET provides support for 
             // many different data types.
-            var trainingDataView = mlContext.Data.ReadFromTextFile<HouseData>(dataPath, hasHeader: true, separatorChar: ',');
+            var trainingDataView = mlContext.Data.LoadFromTextFile<HouseData>(dataPath, hasHeader: true, separatorChar: ',');
 
             // create the trainer we will use  - ML.NET supports different training methods
             // some trainers support automatic feature normalization and setting regularization
             // ML.NET lets you choose a number of different training alogorithms
-            var trainer = mlContext.Regression.Trainers.FastTree(labelColumn: DefaultColumnNames.Label, featureColumn: DefaultColumnNames.Features);
+            var trainer = mlContext.Regression.Trainers.FastTree( labelColumnName: DefaultColumnNames.Label, featureColumnName: DefaultColumnNames.Features);
 
             // Feature Selection - We can also select the features we want to use here, the names used 
             // correspond to the porperty names in HouseData

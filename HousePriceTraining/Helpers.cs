@@ -1,20 +1,21 @@
 ﻿using Microsoft.Data.DataView;
-using Microsoft.ML.Core.Data;
 using Microsoft.ML.Data;
 using System;
 using System.Linq;
+using Microsoft.ML;
+//using Microsoft.ML.Core.Data;
+using System.IO;
 
 namespace myApp
 {
     internal class Helpers
     {
-
         public static void PrintRegressionMetrics(string algorithmName, RegressionMetrics metrics)
         {
             var L1 = metrics.L1;
             var L2 = metrics.L2;
             var RMS = metrics.L1;
-            var lossFunction =  metrics.LossFn;
+            var lossFunction = metrics.LossFn;
             var R2 = metrics.RSquared;
 
             Console.WriteLine($"*************************************************************************************************************");
@@ -27,19 +28,20 @@ namespace myApp
             Console.WriteLine($"*       R-squared: {R2:0.###}  ");
             Console.WriteLine($"*************************************************************************************************************");
         }
-
-
+/*
         public static void PrintRegressionFoldsAverageMetrics(string algorithmName,
                                                               (RegressionMetrics metrics,
                                                                ITransformer model,
                                                                IDataView scoredTestData)[] crossValidationResults
                                                              )
+                                                             */
+            public static void PrintRegressionFoldsAverageMetrics(string algorithmName, TrainCatalogBase.CrossValidationResult<RegressionMetrics>[] crossValidationResults)
         {
-            var L1 = crossValidationResults.Select(r => r.metrics.L1);
-            var L2 = crossValidationResults.Select(r => r.metrics.L2);
-            var RMS = crossValidationResults.Select(r => r.metrics.L1);
-            var lossFunction = crossValidationResults.Select(r => r.metrics.LossFn);
-            var R2 = crossValidationResults.Select(r => r.metrics.RSquared);
+            var L1 = crossValidationResults.Select(r => r.Metrics.L1);
+            var L2 = crossValidationResults.Select(r => r.Metrics.L2);
+            var RMS = crossValidationResults.Select(r => r.Metrics.L1);
+            var lossFunction = crossValidationResults.Select(r => r.Metrics.LossFn);
+            var R2 = crossValidationResults.Select(r => r.Metrics.RSquared);
 
             Console.WriteLine($"*************************************************************************************************************");
             Console.WriteLine($"*       Metrics for {algorithmName} Regression model      ");
@@ -51,7 +53,5 @@ namespace myApp
             Console.WriteLine($"*       Average R-squared: {R2.Average():0.###}  ");
             Console.WriteLine($"*************************************************************************************************************");
         }
-
-
     }
 }
