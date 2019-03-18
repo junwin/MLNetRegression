@@ -6,3 +6,7 @@
 /bin/Debug/netcoreapp2.2
 /obj
 /.vs
+/HousePriceService/bin/Debug/netcoreapp2.2
+/HousePriceService/obj/Debug/netcoreapp2.2
+/HousePriceService/obj/Release/netcoreapp2.2
+/HousePriceService/obj
