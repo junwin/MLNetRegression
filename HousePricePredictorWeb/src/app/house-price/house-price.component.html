@@ -1,60 +1,58 @@
 
-<div fxLayout="row" fxLayoutAlign="space-between">
-  ssss
-</div>
-<div fxLayout="row" fxLayoutAlign="space-between">
- yyyy
-</div>
 
 <h2> Available Areas</h2>
 <ul class="house-price">
-  <li *ngFor="let a of availableAreas" [class.selected]="a === selectedArea" (click)="onSelectArea(a)">
+  <li *ngFor="let a of availableAreas" [class.selected]="a === houseFeature.area" (click)="onSelectArea(a)">
     <span>{{a}}</span>
   </li>
 </ul>
-<div *ngIf="selectedArea">
+<div *ngIf="houseFeature.area">
 
-
-  <div>
-    <label>Prediced Price:
+  <div fxLayout="column">
+    <div>
+      Prediced Price:
       {{housePrice | async}}
-    </label>
-    <label>Area:
-      <input [(ngModel)]="selectedArea" placeholder="area" />
-    </label>
-    <label>rooms:
-      <input [(ngModel)]="houseFeature.rooms" placeholder="rooms" />
-    </label>
-    <label>bed rooms:
-      <input [(ngModel)]="houseFeature.bedRooms" placeholder="bed rooms" />
-    </label>
-    <label>bedRoomsBsmt:
+    </div>
+
+    <div>
+      Area: <input [(ngModel)]="houseFeature.area" placeholder="area" />
+    </div>
+
+    <div>
+      rooms: <input [(ngModel)]="houseFeature.rooms" placeholder="rooms" />
+    </div>
+    <div>
+      bed rooms:  <input [(ngModel)]="houseFeature.bedRooms" placeholder="bed rooms" />
+    </div>
+    <div>
+      bedRoomsBsmt:
       <input [(ngModel)]="houseFeature.bedRoomsBsmt" placeholder="bed rooms" />
-    </label>
-    <label>full bath:
+    </div>
+    <div>
+      full bath:
       <input [(ngModel)]="houseFeature.fullBath" placeholder="rooms" />
-    </label>
-    <label>half bath:
+    </div>
+    <div>
+      half bath:
       <input [(ngModel)]="houseFeature.halfBath" placeholder="rooms" />
-    </label>
-    <label>sq feet:
+    </div>
+    <div>
+      sq feet:
       <input [(ngModel)]="houseFeature.approxSquFeet" placeholder="rooms" />
-    </label>
+    </div>
 
-    <label>sq feet:
+    <div>
+      sq feet:
       <input [(ngModel)]="houseFeature.garageType" placeholder="rooms" />
-    </label>
-    <label>garageSapces:
+    </div>
+    <div>
+      garageSapces:
       <input [(ngModel)]="houseFeature.garageSpaces" placeholder="rooms" />
-    </label>
-    <label>parkingSapces:
+    </div>
+    <div>
+      parkingSapces:
       <input [(ngModel)]="houseFeature.parkingSpaces" placeholder="rooms" />
-    </label>
-
-
-
-
-
-
+    </div>
+    <button md-button (click)="getPredictedPrice()">Get Price</button>
   </div>
 </div>

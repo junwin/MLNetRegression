@@ -10,9 +10,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./house-price.component.css']
 })
 export class HousePriceComponent implements OnInit {
-
   houseFeature: HouseFeatures = {
-     area: '76',
+    area: '76',
     houseType: 'condo',
     rooms: 7,
     bedRooms: 3,
@@ -35,12 +34,12 @@ export class HousePriceComponent implements OnInit {
     this.availableAreas = this.priceCalcService.getAreas();
   }
 
-
+  getPredictedPrice(): void {
+    this.housePrice = this.priceCalcService.getPrice(this.houseFeature);
+  }
 
   onSelectArea(a: string): void {
     this.selectedArea = a;
-    this.housePrice = this.priceCalcService.getPrice(this.houseFeature);
+    this.houseFeature.area = a;
   }
 }
-
-

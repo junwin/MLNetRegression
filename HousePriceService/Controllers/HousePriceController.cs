@@ -20,7 +20,8 @@ namespace HousePriceService.Controllers
 
         // GET api/HousePrice/price
         [HttpGet("{price}")]
-        public ActionResult<IEnumerable<string>> Get(string area, float approxSquFeet, float rooms, float bedrooms, float fullbath, float halfbath, string garageType, float garageSpaces)
+        public ActionResult<IEnumerable<string>> Get([FromQuery] string area, [FromQuery] float approxSquFeet, [FromQuery] float rooms, [FromQuery] float bedrooms, [FromQuery] float fullbath,
+            [FromQuery] float halfbath, [FromQuery] string garageType, [FromQuery] float garageSpaces)
         {
             var housePriceSample1 = new HouseData() { Area = area, BedRooms = bedrooms, BedRoomsBsmt = 0, FullBath = fullbath, HalfBath =halfbath, Rooms = rooms, ApproxSquFeet = approxSquFeet, GarageType = garageType, GarageSpaces = garageSpaces };
             var price = HousePricePrediction.PredictSinglePrice(housePriceSample1);

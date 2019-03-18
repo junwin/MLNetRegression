@@ -6,7 +6,7 @@ namespace HousePriceService
 {
     public class HousePricePrediction
     {
-        public static string PredictSinglePrice(HouseData houseData, string outputModelPath = @"C:\Users\junwi\Source\Repos\HousePriceService\HousePriceService\bin\Debug\netcoreapp2.2\MLNETModels\housePriceModel.zip")
+        public static string PredictSinglePrice(HouseData houseData, string outputModelPath = @"C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\MLNETModels\housePriceModel.zip")
         {
             MLContext mlContext = new MLContext(seed: 0);
             ITransformer loadedModel;
