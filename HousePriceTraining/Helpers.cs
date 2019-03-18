@@ -1,10 +1,8 @@
 ﻿using Microsoft.Data.DataView;
+using Microsoft.ML.Core.Data;
 using Microsoft.ML.Data;
 using System;
 using System.Linq;
-using Microsoft.ML;
-using Microsoft.ML.Core.Data;
-using System.IO;
 
 namespace myApp
 {
@@ -28,14 +26,12 @@ namespace myApp
             Console.WriteLine($"*       R-squared: {R2:0.###}  ");
             Console.WriteLine($"*************************************************************************************************************");
         }
+
         /*
-                public static void PrintRegressionFoldsAverageMetrics(string algorithmName,
-                                                                      (RegressionMetrics metrics,
-                                                                       ITransformer model,
-                                                                       IDataView scoredTestData)[] crossValidationResults
-                                                                     )
-                                                                      public static void PrintRegressionFoldsAverageMetrics(string algorithmName, TrainCatalogBase.CrossValidationResult<RegressionMetrics>[] crossValidationResults)
-                                                                     */
+         * ML NET V11 needs a different signature
+          public static void PrintRegressionFoldsAverageMetrics(string algorithmName, TrainCatalogBase.CrossValidationResult<RegressionMetrics>[] crossValidationResults)
+         */
+
         public static void PrintRegressionFoldsAverageMetrics(string algorithmName,
                                                            (RegressionMetrics metrics,
                                                             ITransformer model,

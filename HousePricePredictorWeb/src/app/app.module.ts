@@ -5,7 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HousePriceComponent } from './house-price/house-price.component';
 import { FormsModule } from '@angular/forms'; 
-import { HttpClientModule }    from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 
 @NgModule({
@@ -15,7 +16,7 @@ import { HttpClientModule }    from '@angular/common/http';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,FormsModule,HttpClientModule
+    AppRoutingModule, FormsModule, HttpClientModule,FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]
