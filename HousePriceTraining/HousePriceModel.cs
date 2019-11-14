@@ -71,7 +71,7 @@ namespace myApp
             // We display the quality metrics in order to evaluate and get the model's accuracy metrics
             Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
             var crossValidationResults = mlContext.Regression.CrossValidate(data: trainingDataView, estimator: trainingPipeline, numberOfFolds: 6, labelColumnName: "Label");
-            //Helpers.PrintRegressionFoldsAverageMetrics(trainer.ToString(), crossValidationResults);
+            Helpers.PrintRegressionFoldsAverageMetrics(trainer.ToString(), crossValidationResults);
 
             // Train the model
             var model = trainingPipeline.Fit(trainingDataView);
