@@ -53,8 +53,8 @@ namespace myApp
             Console.WriteLine($"*************************************************************************************************************");
             Console.WriteLine($"*       Metrics for {algorithmName} Regression model      ");
             Console.WriteLine($"*------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine($"*       Average L1 Loss:    {L1.Average():0.###} ");
-            Console.WriteLine($"*       Average L2 Loss:    {L2.Average():0.###}  ");
+            Console.WriteLine($"*       Average MeanAbsoluteError:    {L1.Average():0.###} ");
+            Console.WriteLine($"*       Average MeanSquaredError:    {L2.Average():0.###}  ");
             Console.WriteLine($"*       Average RMS:          {RMS.Average():0.###}  ");
             Console.WriteLine($"*       Average Loss Function: {lossFunction.Average():0.###}  ");
             Console.WriteLine($"*       Average R-squared: {R2.Average():0.###}  ");
