@@ -1,5 +1,6 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
+using Microsoft.ML.Trainers.FastTree;
 using System;
 using System.IO;
 using System.Linq;
@@ -39,12 +40,12 @@ namespace myApp
 
             // Load sample data into a view that we can use for training - ML.NET provides support for 
             // many different data types.
-            var trainingDataView = mlContext.Data.ReadFromTextFile<HouseData>(dataPath, hasHeader: true, separatorChar: ',');
+            var trainingDataView = mlContext.Data.LoadFromTextFile<HouseData>(dataPath, hasHeader: true, separatorChar: ',');
 
             // create the trainer we will use  - ML.NET supports different training methods
             // some trainers support automatic feature normalization and setting regularization
             // ML.NET lets you choose a number of different training alogorithms
-            var trainer = mlContext.Regression.Trainers.FastTree( labelColumn: DefaultColumnNames.Label, featureColumn: DefaultColumnNames.Features);
+            var trainer = mlContext.Regression.Trainers.FastTree( labelColumnName: "Label", featureColumnName: "Features");
 
             // Feature Selection - We can also select the features we want to use here, the names used 
             // correspond to the porperty names in HouseData
@@ -61,23 +62,24 @@ namespace myApp
            var trainingPipeline = mlContext.Transforms.Concatenate(NumFeatures, numericFeatureNames)
                 .Append(mlContext.Transforms.Categorical.OneHotEncoding("CatGarageType", inputColumnName: categoryFeatureNames[0]))
                 .Append(mlContext.Transforms.Categorical.OneHotEncoding("CatArea", inputColumnName: categoryFeatureNames[1]))
-                .Append(mlContext.Transforms.Concatenate(DefaultColumnNames.Features, NumFeatures, "CatGarageType", "CatArea"))
-                .Append(mlContext.Transforms.CopyColumns(DefaultColumnNames.Label, inputColumnName: nameof(HouseData.SoldPrice)))
+                .Append(mlContext.Transforms.Concatenate("Features", NumFeatures, "CatGarageType", "CatArea"))
+                .Append(mlContext.Transforms.CopyColumns("Label", inputColumnName: nameof(HouseData.SoldPrice)))
                 .Append(trainer);
 
             //  We use cross-valdiation to estimate the variance of the model quality from one run to another,
             // it and also eliminates the need to extract a separate test set for evaluation.
             // We display the quality metrics in order to evaluate and get the model's accuracy metrics
             Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
-            var crossValidationResults = mlContext.Regression.CrossValidate(data: trainingDataView, estimator: trainingPipeline, numFolds: 6, labelColumn: DefaultColumnNames.Label);
-            Helpers.PrintRegressionFoldsAverageMetrics(trainer.ToString(), crossValidationResults);
+            var crossValidationResults = mlContext.Regression.CrossValidate(data: trainingDataView, estimator: trainingPipeline, numberOfFolds: 6, labelColumnName: "Label");
+            //Helpers.PrintRegressionFoldsAverageMetrics(trainer.ToString(), crossValidationResults);
 
             // Train the model
             var model = trainingPipeline.Fit(trainingDataView);
 
             // Save the model for later comsumption from end-user apps
             using (var file = File.OpenWrite(outputModelPath))
-                model.SaveTo(mlContext, file);
+                mlContext.Model.Save(model, trainingDataView.Schema, file);
+                //model.SaveTo(mlContext, file);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
-using Microsoft.ML.Core.Data;
 using System;
 using System.IO;
 
@@ -19,13 +18,16 @@ namespace myApp
         {
             //  Load the prediction model we saved earlier
             ITransformer loadedModel;
+            DataViewSchema dataViewSchema;
             using (var stream = new FileStream(outputModelPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                loadedModel = mlContext.Model.Load(stream);
+            {             
+                loadedModel = mlContext.Model.Load(stream, out dataViewSchema);
             }
 
             // Creete a handy function based on our HouseData class and a class to contain the result
-            var predictionFunction = loadedModel.CreatePredictionEngine<HouseData, HousePrediction>(mlContext);
+            //var predictionFunction = loadedModel.
+            var predictionFunction = mlContext.Model.CreatePredictionEngine<HouseData, HousePrediction>(loadedModel, dataViewSchema);
+         
 
             // Predict the Sale price - TA DA
             var prediction = predictionFunction.Predict(houseData);

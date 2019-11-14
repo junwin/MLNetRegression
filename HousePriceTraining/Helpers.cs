@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.DataView;
-using Microsoft.ML.Core.Data;
+﻿
 using Microsoft.ML.Data;
 using System;
 using System.Linq;
@@ -10,28 +9,26 @@ namespace myApp
     {
         public static void PrintRegressionMetrics(string algorithmName, RegressionMetrics metrics)
         {
-            var L1 = metrics.L1;
-            var L2 = metrics.L2;
-            var RMS = metrics.L1;
-            var lossFunction = metrics.LossFn;
-            var R2 = metrics.RSquared;
-
+          
             Console.WriteLine($"*************************************************************************************************************");
             Console.WriteLine($"*       Metrics for {algorithmName} Regression model      ");
             Console.WriteLine($"*------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine($"*       L1 Loss:    {L1:0.###} ");
-            Console.WriteLine($"*       L2 Loss:    {L2:0.###}  ");
-            Console.WriteLine($"*       RMS:          {RMS:0.###}  ");
-            Console.WriteLine($"*       Loss Function: {lossFunction:0.###}  ");
-            Console.WriteLine($"*       R-squared: {R2:0.###}  ");
+            Console.WriteLine($"*       L1 Loss:    {metrics.MeanAbsoluteError:0.###} ");
+            Console.WriteLine($"*       L2 Loss:    {metrics.MeanSquaredError:0.###}  ");
+            Console.WriteLine($"*       RMS:          {metrics.RootMeanSquaredError:0.###}  ");
+            Console.WriteLine($"*       Loss Function: {metrics.LossFunction:0.###}  ");
+            Console.WriteLine($"*       R-squared: {metrics.RSquared:0.###}  ");
             Console.WriteLine($"*************************************************************************************************************");
         }
+
+
 
         /*
          * ML NET V11 needs a different signature
           public static void PrintRegressionFoldsAverageMetrics(string algorithmName, TrainCatalogBase.CrossValidationResult<RegressionMetrics>[] crossValidationResults)
          */
 
+            /*
         public static void PrintRegressionFoldsAverageMetrics(string algorithmName,
                                                            (RegressionMetrics metrics,
                                                             ITransformer model,
@@ -54,5 +51,6 @@ namespace myApp
             Console.WriteLine($"*       Average R-squared: {R2.Average():0.###}  ");
             Console.WriteLine($"*************************************************************************************************************");
         }
+        */
     }
 }
