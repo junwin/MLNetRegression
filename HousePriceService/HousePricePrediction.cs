@@ -1,6 +1,12 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Core.Data;
 using System.IO;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Trainers.FastTree;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace HousePriceService
 {
@@ -24,5 +30,7 @@ namespace HousePriceService
             var pv = prediction.SoldPrice;
             return string.Format("Predicted Price is {0}", pv);
         }
+
+
     }
 }

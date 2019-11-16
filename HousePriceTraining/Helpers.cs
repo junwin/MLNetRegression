@@ -44,6 +44,11 @@ namespace myApp
                                                           */
             public static void PrintRegressionFoldsAverageMetrics(string algorithmName, IReadOnlyList<TrainCatalogBase.CrossValidationResult<RegressionMetrics>> crossValidationResults)
         {
+            foreach(var result in crossValidationResults)
+            {
+    
+                Console.WriteLine(result.Metrics.RSquared.ToString());
+            }
             var L1 = crossValidationResults.Select(r => r.Metrics.MeanAbsoluteError);
             var L2 = crossValidationResults.Select(r => r.Metrics.MeanSquaredError);
             var RMS = crossValidationResults.Select(r => r.Metrics.RootMeanSquaredError);

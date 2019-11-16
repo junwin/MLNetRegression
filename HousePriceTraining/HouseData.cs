@@ -28,7 +28,7 @@ namespace myApp
         public float HalfBath;
 
         [LoadColumn(3)]
-        public float SoldPrice;
+        public float Label;
 
         [LoadColumn(10)]
         public float ApproxSquFeet;
