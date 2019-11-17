@@ -50,7 +50,7 @@ namespace myApp
         /// <returns></returns>
         public static float[] PredictSinglePriceSet(HouseData[] houseData, string dataTransformModelPath, string outputModelPath)
         {
-            float[] results = new float[houseData.Length];
+           
             // create a new context
             MLContext mlContext = new MLContext();
 
@@ -70,8 +70,10 @@ namespace myApp
             // Use transform to produce an set of predictions
             var predictedPrices = trainedModel.Transform(transformedData);
 
-            // Print out the prediced prices
+            // get the result set and print out the values
+            float[] results = new float[houseData.Length];
             var scoreColumn = predictedPrices.GetColumn<float>("Score");
+
             int i = 0;
             foreach (var r in scoreColumn)
             {

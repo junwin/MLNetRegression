@@ -12,36 +12,7 @@ namespace myApp
 
         private static string CatFeatures = nameof(CatFeatures);
 
-        /// <summary>
-        /// Train and save model for predicting next month country unit sales
-        /// </summary>
-        /// <param name="dataPath">Input training file path</param>
-        /// <param name="outputModelPath">Trained model path</param>
-        public static void TrainAndSaveModel(MLContext mlContext, string dataPath, string outputModelPath = "housePriceModel.zip")
-        {
-            if (File.Exists(outputModelPath))
-            {
-                File.Delete(outputModelPath);
-            }
-
-            CreateHousePriceModelUsingPipeline(mlContext, dataPath, outputModelPath);
-        }
-
-        public static void TrainAndSaveModel(MLContext mlContext, string dataPath, string dataTransformModelPath, string outputModelPath = "housePriceModel.zip")
-        {
-            if (File.Exists(outputModelPath))
-            {
-                File.Delete(outputModelPath);
-            }
-
-            if (File.Exists(dataTransformModelPath))
-            {
-                File.Delete(dataTransformModelPath);
-            }
-
-            CreateHousePriceModelUsingCrossValidationPipeline(mlContext, dataPath, dataTransformModelPath, outputModelPath);
-        }
-
+        
         /// <summary>
         /// Build and train the model used to predict house prices
         /// </summary>
@@ -108,37 +79,39 @@ namespace myApp
 
             // create the trainer we will use  - ML.NET supports different training methods
             // some trainers support automatic feature normalization and setting regularization
-            // ML.NET lets you choose a number of different training alogorithms
-            //var trainer = mlContext.Regression.Trainers.FastTree();
+            // ML.NET lets you choose a number of different training alogorithm
 
             var trainer = mlContext.Regression.Trainers.Sdca();
+            
             // Feature Selection - We can also select the features we want to use here, the names used
             // correspond to the porperty names in HouseData
-            string[] numericFeatureNames = { "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "ApproxSquFeet", "GarageSpaces", "ParkingSpaces" };
-
-            // We distinguish between features that are strings e.g. {"attached","detached","none") garage types and
-            // Numeric faeature, since learning systems only work with numeric values we need to convert the strings.
+            // We distinguish between features that are strings e.g. {"attached","detached","none") 
+            // and normal numeric features, since learning systems we use here only work 
+            // with numeric values we need to convert the strings when setting up the pipeline
             // You can see that in the training pipeline we have applied OneHotEncoding to do this.
-            // We have added area, since although in the data set its a number, it could be some other code.
-            string[] categoryFeatureNames = { "GarageType", "Area" };
-
-            // ML.NET combines transforms for data preparation and model training into a single pipeline, these are then applied
-            // to training data and the input data used to make predictions in your model.
-            var trainingPipeline = mlContext.Transforms.Concatenate("Features", new string[] { "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath", "ApproxSquFeet", "GarageSpaces", "ParkingSpaces" });
-            //.Append(mlContext.Transforms.CopyColumns("Label", inputColumnName: nameof(HouseData.SoldPrice)));
-
+            // We have added area, since although in the data set its a number, it could be some other code
+            // The pipeline below works with transforms the data to the for we can use in a
+            // separate pipline for cross validation - often you can combine these into a single pipeline see above
+            var dataTransformPipeline = mlContext.Transforms.Categorical.OneHotEncoding("CatGarageType", inputColumnName: "GarageType")
+                .Append(mlContext.Transforms.Categorical.OneHotEncoding("CatArea", inputColumnName: "Area"))
+                .Append(mlContext.Transforms.Concatenate("Features", "Rooms", "BedRooms", "BedRoomsBsmt", "FullBath", "HalfBath"
+                , "ApproxSquFeet", "GarageSpaces", "ParkingSpaces", "CatGarageType", "CatArea"));
+        
             //  We use cross-valdiation to estimate the variance of the model quality from one run to another,
             // it and also eliminates the need to extract a separate test set for evaluation.
             // We display the quality metrics in order to evaluate and get the model's accuracy metrics
             Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
 
-            var transformer = trainingPipeline.Fit(trainingDataView);
-
+            // data transform pipeline to convert he HouseData taining feature set
+            var transformer = dataTransformPipeline.Fit(trainingDataView);
             var transformedData = transformer.Transform(trainingDataView);
 
-            //IEstimator<ITransformer> fastTreeEstimator = mlContext.Regression.Trainers.FastTree();
+            // train and corss validate - this returns a model and training meteric for each
+            // fold, in this case I have chosen 3 folds
             var cvResults = mlContext.Regression.CrossValidate(transformedData, trainer, numberOfFolds: 3);
 
+            // We will use th RSqured metric to judge the how well we have fitted 
+            // the data - the closer to 1, the better the fit.
             // Select all models and use the one with the best RSquared result
             ITransformer[] models =
                 cvResults
@@ -146,12 +119,14 @@ namespace myApp
                     .Select(fold => fold.Model)
                     .ToArray();
 
+            // Model with best fit
             ITransformer topModel = models[0];
 
-            // print thr stats
+            // print the stats
             Helpers.PrintRegressionFoldsAverageMetrics(trainer.ToString(), cvResults);
 
             // Save the model for later comsumption from end-user apps
+            // since we have 2 pipelines we need to save both
             if (File.Exists(outputModelPath))
             {
                 File.Delete(outputModelPath);
