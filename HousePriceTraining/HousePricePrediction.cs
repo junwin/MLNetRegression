@@ -8,7 +8,8 @@ namespace myApp
     public class HousePricePrediction
     {
         /// <summary>
-        /// Use a trained model to predict a house sale price
+        /// Use a trained model to predict a house sale price - this works when a single pipeline
+        /// has been used when creating the model
         /// </summary>
         /// <param name="houseData"></param>
         /// <param name="mlContext"></param>
@@ -20,14 +21,13 @@ namespace myApp
             ITransformer loadedModel;
             DataViewSchema dataViewSchema;
             using (var stream = new FileStream(outputModelPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {             
+            {
                 loadedModel = mlContext.Model.Load(stream, out dataViewSchema);
             }
-     
+
             // Create a handy function based on our HouseData class and a class to contain the result
             //var predictionFunction = loadedModel.
             var predictionFunction = mlContext.Model.CreatePredictionEngine<HouseData, HousePrediction>(loadedModel, dataViewSchema);
-         
 
             // Predict the Sale price - TA DA
             var prediction = predictionFunction.Predict(houseData);
@@ -39,21 +39,30 @@ namespace myApp
             Console.WriteLine($"**********************************************************************");
         }
 
-
-        public static string PredictSinglePrice(HouseData[] houseData, MLContext mlContextx, string dataTransformModelPath = @"C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\MLNETModels\housePriceDataTransformer.zip", string outputModelPath = @"C:\Users\junwi\source\repos\MLNetRegression\HousePriceService\bin\Debug\netcoreapp2.2\MLNETModels\housePriceModel.zip")
+        /// <summary>
+        /// This takes a set of features and predicts a set of prices. It assumes taht a separate pipeline was used for
+        /// data preparation and another for traing the model - for example using cross validation
+        /// </summary>
+        /// <param name="houseData"></param>
+        /// <param name="mlContextx"></param>
+        /// <param name="dataTransformModelPath"></param>
+        /// <param name="outputModelPath"></param>
+        /// <returns></returns>
+        public static float[] PredictSinglePriceSet(HouseData[] houseData, string dataTransformModelPath, string outputModelPath)
         {
-            MLContext mlContext2 = new MLContext();
-            
-            // Create a deat view from the house data objects
-            IDataView data = mlContext2.Data.LoadFromEnumerable< HouseData > (houseData);
+            float[] results = new float[houseData.Length];
+            // create a new context
+            MLContext mlContext = new MLContext();
+
+            // Create a data view from the house data objects
+            IDataView data = mlContext.Data.LoadFromEnumerable<HouseData>(houseData);
 
             // Define data preparation and trained model schemas
             DataViewSchema dataPrepPipelineSchema, modelSchema;
 
             // Load data preparation pipeline and trained model
-            ITransformer dataPrepPipeline = mlContext2.Model.Load(dataTransformModelPath, out dataPrepPipelineSchema);
-            ITransformer trainedModel = mlContext2.Model.Load(outputModelPath, out modelSchema);
-
+            ITransformer dataPrepPipeline = mlContext.Model.Load(dataTransformModelPath, out dataPrepPipelineSchema);
+            ITransformer trainedModel = mlContext.Model.Load(outputModelPath, out modelSchema);
 
             // Transform inbound data
             var transformedData = dataPrepPipeline.Transform(data);
@@ -63,11 +72,14 @@ namespace myApp
 
             // Print out the prediced prices
             var scoreColumn = predictedPrices.GetColumn<float>("Score");
+            int i = 0;
             foreach (var r in scoreColumn)
+            {
                 Console.WriteLine(r);
-           
+                results[i++] = r;
+            }
 
-            return "";
+            return results;
         }
     }
 }

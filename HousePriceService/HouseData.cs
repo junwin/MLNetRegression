@@ -1,5 +1,7 @@
 ﻿using Microsoft.ML.Data;
 
+//MLS #	Stat	Closed Date	Sold Pr	Type	Yr Blt	Street #	Str Name	Area	Zip	ASF	# Rms	# Full Baths	# Half Baths	Bsmt Bth	Beds	Bsmt. Beds	Garage Type	# Garage Spaces	# Parking Spaces
+
 namespace HousePriceService
 {
     public class HouseData
@@ -26,7 +28,7 @@ namespace HousePriceService
         public float HalfBath;
 
         [LoadColumn(3)]
-        public float SoldPrice;
+        public float Label;
 
         [LoadColumn(10)]
         public float ApproxSquFeet;
